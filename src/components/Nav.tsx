@@ -2,12 +2,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { signIn, signOut, getProviders, useSession } from "next-auth/react";
+import { signIn, signOut, getProviders, useSession, LiteralUnion, ClientSafeProvider } from "next-auth/react";
+import { BuiltInProviderType } from "next-auth/providers";
 
 function Nav() {
   const { data: session } = useSession();
 
-  const [providers, setProviders] = useState(null);
+  const [providers, setProviders] = useState<Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  > | null>(null);
   const [toggleDropdown, settoggleDropdown] = useState(false);
 
   useEffect(() => {
@@ -54,7 +58,7 @@ function Nav() {
             {providers &&
               Object.values(providers).map((provider) => (
                 <button type="button" key={provider.name} onClick={() => signIn(provider.id)} className="black_btn">
-                  Sign In
+                  {`Sign In with ${provider.name}`}
                 </button>
               ))}
           </>
