@@ -1,20 +1,17 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState } from "react";
-import PromptCardList from "./PromptCardList";
+import { postProps } from "@utils/types";
+import PostCardList from "./PostCardList";
 
 function Feed() {
   const [searchText, setSearchText] = useState("");
-  const [posts, setPosts] = useState([
-    { creator: { email: "", id: "", image: "", username: "", _id: "" }, prompt: "", tag: "", _id: "" },
-  ]);
-  const [searchedResult, setSearchedResult] = useState([
-    { creator: { email: "", id: "", image: "", username: "", _id: "" }, prompt: "", tag: "", _id: "" },
-  ]);
+  const [posts, setPosts] = useState<postProps[]>();
+  const [searchedResult, setSearchedResult] = useState<postProps[]>();
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
+      const response = await fetch("/api/post");
       const data = await response.json();
       setPosts(data);
     };
@@ -23,30 +20,36 @@ function Feed() {
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-
-    const searchResult = filterPrompts(e.target.value);
+    console.log(e.target.value);
+    const searchResult = filterPosts(e.target.value);
     setSearchedResult(searchResult);
   };
 
-  const filterPrompts = (searchText: string) => {
+  const filterPosts = (searchText: string) => {
     const regex = new RegExp(searchText, "i");
-    return posts.filter((item) => {
-      return regex.test(item.creator.username) || regex.test(item.tag) || regex.test(item.prompt);
+    return posts?.filter((item) => {
+      return (
+        regex.test(item.creator.username) || regex.test(item.tag) || regex.test(item.link) || regex.test(item.comment)
+      );
     });
   };
 
   const handleTagClick = async (tagName: string) => {
     setSearchText(tagName);
-    const searchResult = await filterPrompts(tagName);
+    const searchResult = await filterPosts(tagName);
     setSearchedResult(searchResult);
   };
 
   return (
     <section className="feed">
-      <form action="" className="relative w-full flex-center">
+      <form
+        className="relative w-full flex-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}>
         <input
           type="text"
-          placeholder="Search for a tag or a username"
+          placeholder="Search for a post..."
           value={searchText}
           onChange={handleSearchChange}
           className="search_input peer"
@@ -54,10 +57,10 @@ function Feed() {
         />
       </form>
 
-      {searchText ? (
-        <PromptCardList data={searchedResult} handleTagClick={handleTagClick}></PromptCardList>
+      {posts && posts.length > 0 && searchedResult ? (
+        <PostCardList data={searchedResult} handleTagClick={handleTagClick}></PostCardList>
       ) : (
-        <PromptCardList data={posts} handleTagClick={handleTagClick}></PromptCardList>
+        posts && posts.length > 0 && <PostCardList data={posts} handleTagClick={handleTagClick}></PostCardList>
       )}
     </section>
   );

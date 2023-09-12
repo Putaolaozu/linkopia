@@ -1,15 +1,16 @@
-export interface postProps {
+export type postProps = {
   creator: { email: string; id: string; image: string; username: string; _id: string };
-  prompt: string;
+  link: string;
+  comment: string;
   tag: string;
   _id: string;
-}
+};
 
 export type handleTagClickType = (tagName: string) => void;
 export type handleEditType = (post: postProps) => void;
 export type handleDeleteType = (post: postProps) => void;
 
-export interface PromptCardProps {
+export interface PostCardProps {
   post: postProps;
   handleTagClick?: handleTagClickType;
   handleEdit?: handleEditType;
@@ -18,8 +19,8 @@ export interface PromptCardProps {
 
 export type FormProps = {
   type: string;
-  post: { tag: string; prompt: string };
-  setPost: ({ prompt, tag }: { prompt: string; tag: string }) => void;
+  post: { tag: string; link: string; comment: string };
+  setPost: ({ link, tag, comment }: { tag: string; link: string; comment: string }) => void;
   submitting: boolean;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };

@@ -33,17 +33,15 @@ function Nav() {
           width="30"
           height="30"
           className="object-contain"></Image>
-        <p className="logo_text">Promptopia</p>
+        <p className="logo_text">Linkopia</p>
       </Link>
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
-            <Link href="/create-prompt" className="black_btn">
+            <Link href="/create-post" className="black_btn">
               Create Post
             </Link>
-            <button type="button" onClick={() => signOut()} className="outline_btn">
-              Sign Out
-            </button>
+
             <Link href="/profile">
               <Image
                 src={imageSrc || "assets/images/logo.svg"}
@@ -52,6 +50,9 @@ function Nav() {
                 alt="profile"
                 className="rounded-full"></Image>
             </Link>
+            <button type="button" onClick={() => signOut()} className="outline_btn">
+              Sign Out
+            </button>
           </div>
         ) : (
           <>
@@ -82,8 +83,8 @@ function Nav() {
                 <Link href="/profile" className="dropdowm_link" onClick={() => settoggleDropdown(false)}>
                   My Profile
                 </Link>
-                <Link href="/create-prompt" className="dropdowm_link" onClick={() => settoggleDropdown(false)}>
-                  Create Prompt
+                <Link href="/create-post" className="dropdowm_link" onClick={() => settoggleDropdown(false)}>
+                  Create Post
                 </Link>
                 <button
                   type="button"

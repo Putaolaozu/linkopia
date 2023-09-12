@@ -1,4 +1,4 @@
-import Prompt from "@models/prompt";
+import Post from "@models/post";
 import { connectToDB } from "@utils/database";
 import { NextRequest } from "next/server";
 
@@ -8,35 +8,35 @@ export const GET = async (req: Request, { params }: { params: paramType }) => {
   try {
     await connectToDB();
 
-    const prompt = await Prompt.findById(params.id).populate("creator");
+    const post = await Post.findById(params.id).populate("creator");
 
-    if (!prompt) {
-      return new Response("Prompt not found", { status: 404 });
+    if (!post) {
+      return new Response("Post not found", { status: 404 });
     }
 
-    return new Response(JSON.stringify(prompt), { status: 200 });
+    return new Response(JSON.stringify(post), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify(error), { status: 500 });
   }
 };
 
 export const PATCH = async (req: NextRequest, { params }: { params: paramType }) => {
-  const { prompt, tag } = await req.json();
+  const { post, tag } = await req.json();
 
   try {
     await connectToDB();
 
-    let existingPrompt = await Prompt.findById(params.id);
-    if (!existingPrompt) {
-      return new Response("Prompt not found", { status: 404 });
+    let existingPost = await Post.findById(params.id);
+    if (!existingPost) {
+      return new Response("Post not found", { status: 404 });
     }
 
-    existingPrompt.prompt = prompt;
-    existingPrompt.tag = tag;
+    existingPost.post = post;
+    existingPost.tag = tag;
 
-    await existingPrompt.save();
+    await existingPost.save();
 
-    return new Response(JSON.stringify(existingPrompt), { status: 201 });
+    return new Response(JSON.stringify(existingPost), { status: 201 });
   } catch (error) {
     return new Response(JSON.stringify(error), { status: 500 });
   }
@@ -45,9 +45,9 @@ export const PATCH = async (req: NextRequest, { params }: { params: paramType })
 export const DELETE = async (req: Request, { params }: { params: paramType }) => {
   try {
     await connectToDB();
-    await Prompt.findByIdAndRemove(params.id);
+    await Post.findByIdAndRemove(params.id);
 
-    return new Response("Prompt deleted", { status: 204 });
+    return new Response("Post deleted", { status: 204 });
   } catch (error) {
     return new Response(JSON.stringify(error), { status: 500 });
   }

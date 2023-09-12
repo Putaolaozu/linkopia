@@ -3,24 +3,15 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { PromptCardProps } from "@utils/types";
+import { PostCardProps } from "@utils/types";
 import Link from "next/link";
 
-function PromptCard({ post, handleTagClick, handleEdit, handleDelete }: PromptCardProps) {
-  const [copied, setCopied] = useState(false);
+function PostCard({ post, handleTagClick, handleEdit, handleDelete }: PostCardProps) {
   const { data: session } = useSession();
   const pathName = usePathname();
 
-  const handleCopy = () => {
-    setCopied(true);
-    navigator.clipboard.writeText(post.prompt);
-    setTimeout(() => {
-      setCopied(false);
-    }, 3000);
-  };
-
   return (
-    <div className="prompt_card">
+    <div className="post_card z-20">
       <div className="flex justify-between items-start gap-5">
         <Link href={`/profile`} className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
           <Image
@@ -35,18 +26,11 @@ function PromptCard({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
             <p className="font-inter text-sm text-gray-500">{post.creator.email}</p>
           </div>
         </Link>
-
-        <div
-          className={`copy_btn ${copied ? "copied" : "hover:bg-gray-100 transition-all cursor-pointer"}`}
-          onClick={handleCopy}>
-          <Image
-            src={copied ? "/assets/icons/tick.svg" : "/assets/icons/copy.svg"}
-            width={12}
-            height={12}
-            alt={copied ? "already copied" : "copy this prompt"}></Image>
-        </div>
       </div>
-      <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+      <Link href={post.link || ""} className="block my-4 font-satoshi text-lg text-blue-700 hover:underline">
+        {post.link.split("//")[1]}
+      </Link>
+      <p className="my-4 font-satoshi text-sm text-gray-700">{post.comment}</p>
       <p
         className="font-inter text-sm blue_gradient cursor-pointer"
         onClick={() => {
@@ -59,28 +43,28 @@ function PromptCard({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
 
       {session?.user?.id === post.creator._id && pathName === "/profile" && (
         <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
-          <p
-            className="font-inter text-sm green_gradient cursor-pointer"
+          <button
+            className="font-inter submit_btn"
             onClick={() => {
               if (handleEdit) {
                 handleEdit(post);
               }
             }}>
             Edit
-          </p>
-          <p
-            className="font-inter text-sm orange_gradient cursor-pointer"
+          </button>
+          <button
+            className="font-inter delete_btn"
             onClick={() => {
               if (handleDelete) {
                 handleDelete(post);
               }
             }}>
             Delete
-          </p>
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-export default PromptCard;
+export default PostCard;

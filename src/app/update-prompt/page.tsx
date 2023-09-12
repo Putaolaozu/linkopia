@@ -1,47 +1,46 @@
 "use client";
 
 import Form from "@components/Form";
+import { FormProps } from "@utils/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-function EditPrompt() {
+function EditPost() {
   const [submitting, setSubmitting] = useState(false);
-  const [post, setPost] = useState({
-    prompt: "",
-    tag: "",
-  });
+  const [post, setPost] = useState<FormProps["post"]>({ link: "", tag: "", comment: "" });
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const promptId = searchParams?.get("id");
+  const postId = searchParams?.get("id");
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`api/prompt/${promptId}`);
+      const response = await fetch(`api/post/${postId}`);
       const data = await response.json();
 
-      setPost({ prompt: data.prompt, tag: data.tag });
+      setPost({ link: data.link, tag: data.tag, comment: data.comment });
     };
 
-    if (promptId) {
+    if (postId) {
       getPromptDetails();
     }
-  }, [promptId]);
+  }, [postId]);
 
   const editPrompt = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
 
-    if (promptId === "" || promptId === null) {
+    if (postId === "" || postId === null) {
       alert("Prompt ID not found");
     }
 
     try {
-      const response = await fetch(`/api/prompt/${promptId}`, {
+      const response = await fetch(`/api/post/${postId}`, {
         method: "PATCH",
         body: JSON.stringify({
-          prompt: post.prompt,
+          comment: post.comment,
+          link: post.link,
           tag: post.tag,
         }),
       });
@@ -60,4 +59,4 @@ function EditPrompt() {
   return <Form type="Edit" post={post} setPost={setPost} submitting={submitting} handleSubmit={editPrompt}></Form>;
 }
 
-export default EditPrompt;
+export default EditPost;

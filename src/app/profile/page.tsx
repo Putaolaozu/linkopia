@@ -8,14 +8,7 @@ import React, { useEffect, useState } from "react";
 const ProfilePage = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const [posts, setPosts] = useState([
-    {
-      creator: { email: "", id: "", image: "", username: "", _id: "" },
-      prompt: "",
-      tag: "",
-      _id: "",
-    },
-  ]);
+  const [posts, setPosts] = useState<postProps[]>();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -42,7 +35,7 @@ const ProfilePage = () => {
           method: "DELETE",
         });
 
-        const filteredPosts = posts.filter((p) => p._id !== post._id);
+        const filteredPosts = posts?.filter((p) => p._id !== post._id);
 
         setPosts(filteredPosts);
       } catch (error) {
@@ -51,13 +44,10 @@ const ProfilePage = () => {
     }
   };
 
-  return (
-    <Profile
-      name="My"
-      desc="Welcome to your personalized profile page"
-      data={posts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}></Profile>
+  return posts && posts.length > 0 ? (
+    <Profile name="Your" desc="" data={posts} handleEdit={handleEdit} handleDelete={handleDelete}></Profile>
+  ) : (
+    <h2 className="text-xl sm:text-2xl italic">You've got no post yet. 🤓</h2>
   );
 };
 
