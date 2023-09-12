@@ -3,8 +3,8 @@ import Provider from "@components/Provider";
 import "./globals.css";
 
 export const metadata = {
-  title: "Promptopia",
-  deccription: "Discover and share AI prompts",
+  title: "Linkopia",
+  deccription: "Break the Information Cocoons, share interesting links",
 };
 
 function RootLayout({ children }: { children: React.ReactNode }) {
