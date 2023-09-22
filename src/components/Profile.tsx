@@ -17,7 +17,7 @@ function Profile({ name, desc, data, handleEdit, handleDelete }: ProfileProps) {
         <span className="blue_gradient">{name} Posts</span>
       </h1>
       {desc && <p className="desc text-left">{desc}</p>}
-      <div className="mt-16 prompt_layout">
+      <div className="mt-16 grid grid-cols-3 gap-4">
         {data.map((post) => {
           return (
             <PromptCard key={post._id} post={post} handleEdit={handleEdit} handleDelete={handleDelete}></PromptCard>

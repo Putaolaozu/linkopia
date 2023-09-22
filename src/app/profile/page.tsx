@@ -20,10 +20,10 @@ const ProfilePage = () => {
     if (session?.user?.id) {
       fetchPosts();
     }
-  }, []);
+  }, [session]);
 
   const handleEdit = (post: postProps) => {
-    router.push(`/update-prompt?id=${post._id}`);
+    router.push(`/update-post?id=${post._id}`);
   };
 
   const handleDelete = async (post: postProps) => {
@@ -31,13 +31,14 @@ const ProfilePage = () => {
 
     if (hasConfirmed) {
       try {
-        await fetch(`/api/prompt/${post._id}`, {
+        await fetch(`/api/post/${post._id}`, {
           method: "DELETE",
+        }).then((response) => {
+          if (response.ok) {
+            const filteredPosts = posts?.filter((p) => p._id !== post._id);
+            setPosts(filteredPosts);
+          }
         });
-
-        const filteredPosts = posts?.filter((p) => p._id !== post._id);
-
-        setPosts(filteredPosts);
       } catch (error) {
         console.log(error);
       }

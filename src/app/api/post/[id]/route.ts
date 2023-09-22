@@ -47,8 +47,9 @@ export const DELETE = async (req: Request, { params }: { params: paramType }) =>
     await connectToDB();
     await Post.findByIdAndRemove(params.id);
 
-    return new Response("Post deleted", { status: 204 });
+    return new Response("Post deleted");
   } catch (error) {
+    console.log(error);
     return new Response(JSON.stringify(error), { status: 500 });
   }
 };
